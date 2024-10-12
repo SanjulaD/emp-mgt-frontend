@@ -2,11 +2,14 @@ import { gql } from '@apollo/client';
 
 export const GET_EMPLOYEES = gql`
   query GetEmployees {
-    fetchPost {
+    getEmployees {
       id
       firstName
       lastName
       email
+      number
+      gender
+      photo
     }
   }
 `;
@@ -18,6 +21,8 @@ export const GET_EMPLOYEE_BY_ID = gql`
       firstName
       lastName
       email
+      number
+      gender
     }
   }
 `;

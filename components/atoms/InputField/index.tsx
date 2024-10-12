@@ -1,16 +1,14 @@
-'use client';
-
 import React from 'react';
 import { useController, Control } from 'react-hook-form';
 
 interface InputFieldProps {
   name: string;
-  control: Control<any>; // Replace 'any' with your form data type
+  control: Control<any>;
   label: string;
   type?: string;
   required?: boolean;
-  as?: 'input' | 'select'; // Accept input or select types
-  children?: React.ReactNode; // Accept children for select options
+  as?: 'input' | 'select';
+  children?: React.ReactNode;
 }
 
 const InputField: React.FC<InputFieldProps> = ({

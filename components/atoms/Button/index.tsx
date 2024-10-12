@@ -1,5 +1,3 @@
-'use client';
-
 interface ButtonProps {
   onClick?: () => void;
   className?: string;

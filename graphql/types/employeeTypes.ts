@@ -13,7 +13,7 @@ export interface GetEmployeesResponse {
 }
 
 export interface GetEmployeeByIdResponse {
-  getEmployeeById: Employee | null;
+  getEmployeeById: Employee;
 }
 
 export interface CreateEmployeeInput {

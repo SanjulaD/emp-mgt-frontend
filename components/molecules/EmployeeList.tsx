@@ -1,53 +1,55 @@
+import React, { useEffect } from 'react';
 import Button from '@components/atoms/Button';
+import Loader from '@components/atoms/Loader';
 import EmployeeCard from './EmployeeCard';
-import { MdEdit } from 'react-icons/md'; // Import edit icon
-import { RiDeleteBin6Line } from 'react-icons/ri'; // Import delete icon
-
-interface Employee {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  gender: string;
-}
-
-const employees: Employee[] = [
-  {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phoneNumber: '123-456-7890',
-    gender: 'Male',
-  },
-  {
-    id: 2,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane.doe@example.com',
-    phoneNumber: '098-765-4321',
-    gender: 'Female',
-  },
-  // Add more employees here
-];
+import { MdEdit } from 'react-icons/md';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { deleteEmployee, fetchEmployees } from '@redux/thunk';
+import { useAppDispatch } from '@redux/hooks';
+import { useAppSelector } from '@redux/store';
+import { toast, ToastContainer } from 'react-toastify';
+import { getGenderDisplay } from '@lib/utils/helpers';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
-  const handleEdit = (id: number) => {
-    console.log(`Edit employee with id ${id}`);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const employees = useAppSelector((state) => state.employees.employees);
+  const loading = useAppSelector((state) => state.employees.loading);
+
+  useEffect(() => {
+    dispatch(fetchEmployees());
+  }, [dispatch]);
+
+  const handleEdit = (id: string) => {
+    router.push(`/employee/edit/${id}`);
   };
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete employee with id ${id}`);
+  const handleDelete = (id: string) => {
+    dispatch(deleteEmployee(id))
+      .unwrap()
+      .then(() => {
+        toast.success('Employee deleted successfully');
+      })
+      .catch((error) => {
+        console.error(`Failed to delete employee with id ${id}:`, error);
+        toast.error(`Failed to delete employee with id ${id}`);
+      });
   };
 
-  // List View (Table)
+  if (loading) {
+    return <Loader />;
+  }
+
   if (viewMode === 'list') {
     return (
-      <div className="max-w-5xl mx-auto py-8">
+      <div className="max-w-6xl mx-auto py-8">
+        <ToastContainer />
         <table className="table-auto w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-200">
+              <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">First Name</th>
               <th className="px-4 py-2">Last Name</th>
               <th className="px-4 py-2">Email</th>
@@ -59,24 +61,36 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
           <tbody>
             {employees.map((employee) => (
               <tr key={employee.id} className="border-b">
+                <td className="px-4 py-2">
+                  {employee.photo ? (
+                    <Image src={employee.photo} alt={employee.firstName} width={70} height={50} />
+                  ) : (
+                    <Image
+                      src="https://robohash.org/mail@ashallendesign.co.uk"
+                      alt="Default placeholder"
+                      width={70}
+                      height={50}
+                    />
+                  )}
+                </td>
                 <td className="px-4 py-2">{employee.firstName}</td>
                 <td className="px-4 py-2">{employee.lastName}</td>
                 <td className="px-4 py-2">{employee.email}</td>
-                <td className="px-4 py-2">{employee.phoneNumber}</td>
-                <td className="px-4 py-2">{employee.gender}</td>
+                <td className="px-4 py-2">{employee.number}</td>
+                <td className="px-4 py-2">{getGenderDisplay(employee.gender)}</td>
                 <td className="px-4 py-2">
                   <div className="space-x-2">
                     <Button
                       onClick={() => handleEdit(employee.id)}
                       className="bg-yellow-500 text-white px-2 py-2 rounded hover:bg-yellow-600 transition duration-200"
                     >
-                      <MdEdit className="h-5 w-5 mr-1" aria-hidden="true" />
+                      <MdEdit className="h-5 w-5" aria-hidden="true" />
                     </Button>
                     <Button
                       onClick={() => handleDelete(employee.id)}
                       className="bg-red-500 text-white px-2 py-2 rounded hover:bg-red-600 transition duration-200"
                     >
-                      <RiDeleteBin6Line className="h-5 w-5 mr-1" aria-hidden="true" />
+                      <RiDeleteBin6Line className="h-5 w-5" aria-hidden="true" />
                     </Button>
                   </div>
                 </td>
@@ -88,9 +102,9 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
     );
   }
 
-  // Grid View (Cards)
   return (
-    <div className="max-w-5xl mx-auto py-8">
+    <div className="max-w-8xl mx-auto py-8">
+      <ToastContainer />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {employees.map((employee) => (
           <EmployeeCard
@@ -98,8 +112,9 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
             firstName={employee.firstName}
             lastName={employee.lastName}
             email={employee.email}
-            phoneNumber={employee.phoneNumber}
+            phoneNumber={employee.number}
             gender={employee.gender}
+            photo={employee?.photo}
             onEdit={() => handleEdit(employee.id)}
             onDelete={() => handleDelete(employee.id)}
           />

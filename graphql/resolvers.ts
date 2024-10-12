@@ -29,7 +29,7 @@ const employeeResolvers = {
     async createEmployee(_: unknown, input: CreateEmployeeInput): Promise<Employee> {
       const { data } = await client.mutate<CreateEmployeeResponse>({
         mutation: CREATE_EMPLOYEE,
-        variables: input,
+        variables: { input },
       });
 
       if (!data || !data.createEmployee) {
@@ -38,10 +38,10 @@ const employeeResolvers = {
 
       return data.createEmployee;
     },
-    async deleteEmployee(_: unknown, { id }: DeleteEmployeeInput): Promise<Employee> {
+    async deleteEmployee(_: unknown, { input }: { input: { id: string } }): Promise<Employee> {
       const { data } = await client.mutate<DeleteEmployeeResponse>({
         mutation: DELETE_EMPLOYEE,
-        variables: { id },
+        variables: { input: { id: input.id } },
       });
 
       if (!data || !data.deleteEmployee) {
