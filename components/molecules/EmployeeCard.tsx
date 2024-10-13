@@ -31,10 +31,11 @@ const EmployeeCard = ({
         <Image src={photo} alt={firstName} width={350} height={200} />
       ) : (
         <Image
-          src="https://robohash.org/mail@ashallendesign.co.uk"
-          alt="Default placeholder"
+          src="https://robohash.org/default"
+          alt={`${firstName} ${lastName}`}
           width={350}
           height={200}
+          fetchPriority="high"
         />
       )}
       <div className="p-5">
@@ -48,13 +49,15 @@ const EmployeeCard = ({
         <div className="flex justify-end space-x-3 mt-4">
           <Button
             onClick={onEdit}
+            ariaLabel="Edit"
             className="bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
           >
             <MdEdit className="h-5 w-5" aria-hidden="true" />
           </Button>
           <Button
             onClick={onDelete}
-            className="bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+            ariaLabel="Delete"
+            className="bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200 delete-button"
           >
             <RiDeleteBin6Line className="h-5 w-5" aria-hidden="true" />
           </Button>

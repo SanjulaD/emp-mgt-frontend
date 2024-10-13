@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@components/atoms/Button';
 import Loader from '@components/atoms/Loader';
 import { MdEdit } from 'react-icons/md';
@@ -12,12 +12,17 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Table from '@components/atoms/Table';
 import EmployeeCard from '@components/molecules/EmployeeCard';
+import SearchBar from '@components/molecules/SearchBar';
 
 const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const employees = useAppSelector((state) => state.employees.employees);
   const loadingEmployees = useAppSelector((state) => state.employees.loadingEmployees);
+
+  const [search, setSearch] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('first_name');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
 
   useEffect(() => {
     dispatch(fetchEmployees());
@@ -43,6 +48,14 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
     return <Loader />;
   }
 
+  const handleSearch = (term: string) => {
+    setSearch(term);
+  };
+
+  const handleSortChange = (sortType: string) => {
+    setSortBy(sortType);
+  };
+
   const columns = [
     {
       header: 'Image',
@@ -55,7 +68,8 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
             alt={`${row.firstName} ${row.lastName}`}
             width={70}
             height={50}
-            fetchPriority="high"
+            priority={true}
+            quality={80}
           />
         ),
     },
@@ -89,6 +103,7 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
     return (
       <div className="max-w-6xl mx-auto py-8">
         <ToastContainer />
+        <SearchBar onSearch={handleSearch} onSortChange={handleSortChange} />
         <Table columns={columns} data={employees} />
       </div>
     );
@@ -97,6 +112,7 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
   return (
     <div className="max-w-8xl mx-auto py-8">
       <ToastContainer />
+      <SearchBar onSearch={handleSearch} onSortChange={handleSortChange} />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {employees?.map((employee) => (
           <EmployeeCard

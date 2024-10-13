@@ -6,17 +6,18 @@ import { FaPlus } from 'react-icons/fa6';
 import { MdGridView } from 'react-icons/md';
 import { CiViewList } from 'react-icons/ci';
 import Button from '@components/atoms/Button';
+import { EMPLOYEE_PATHS, VIEW_MODES } from '@lib/utils/constants';
 
 const Employee = () => {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [viewMode, setViewMode] = useState<(typeof VIEW_MODES)[keyof typeof VIEW_MODES]>(VIEW_MODES.LIST);
 
   const handleAddEmployee = () => {
-    router.push('/employee/add');
+    router.push(EMPLOYEE_PATHS.ADD);
   };
 
   const toggleViewMode = () => {
-    setViewMode((prevMode) => (prevMode === 'list' ? 'grid' : 'list'));
+    setViewMode((prevMode) => (prevMode === VIEW_MODES.LIST ? VIEW_MODES.GRID : VIEW_MODES.LIST));
   };
 
   return (
@@ -34,7 +35,7 @@ const Employee = () => {
           onClick={toggleViewMode}
           className="flex items-center bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
         >
-          {viewMode === 'list' ? (
+          {viewMode === VIEW_MODES.LIST ? (
             <MdGridView className="h-5 w-5" aria-hidden="true" />
           ) : (
             <CiViewList className="h-5 w-5" aria-hidden="true" />

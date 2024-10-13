@@ -15,6 +15,7 @@ import { Employee } from '@graphql/types/employeeTypes';
 import { employeeSchema } from '@lib/schemas/employeeSchema';
 import Button from '@components/atoms/Button';
 import { toast, ToastContainer } from 'react-toastify';
+import { EMPLOYEE_PATHS, BUTTON_TYPES } from '@lib/utils/constants';
 
 const EditEmployee: React.FC = () => {
   const { control, handleSubmit, reset } = useForm<Employee>({
@@ -28,8 +29,10 @@ const EditEmployee: React.FC = () => {
   const loadingEmployeeById = useAppSelector((state) => state.employees.loadingEmployeeById);
 
   useEffect(() => {
+    const employeeId = id as string;
+
     if (id) {
-      dispatch(fetchEmployeeById(id))
+      dispatch(fetchEmployeeById(employeeId))
         .unwrap()
         .then((employeeData) => {
           if (employeeData) {
@@ -46,7 +49,7 @@ const EditEmployee: React.FC = () => {
 
   const onSubmit: SubmitHandler<Employee> = async (data) => {
     const input = {
-      id: id,
+      id: id as string,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
@@ -64,16 +67,16 @@ const EditEmployee: React.FC = () => {
       }
       toast.success('Employee updated successfully');
 
-      router.push('/employee/list');
+      router.push(EMPLOYEE_PATHS.LIST);
     } catch (error) {
       console.error('Failed to update employee:', error);
-      const errorMessage = error.message || 'An unknown error occurred';
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast.error(`Failed to update employee: ${errorMessage}`);
     }
   };
 
   const handleCancel = () => {
-    router.push('/employee/list');
+    router.push(EMPLOYEE_PATHS.LIST);
   };
 
   if (loadingEmployeeById) {
@@ -103,7 +106,7 @@ const EditEmployee: React.FC = () => {
           >
             Cancel
           </Button>
-          <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          <Button type={BUTTON_TYPES.SUBMIT} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             {loadingUpdate ? 'Saving...' : 'Update'}
           </Button>
         </div>

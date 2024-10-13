@@ -6,11 +6,12 @@ import InputField from '@components/atoms/InputField';
 import { useRouter } from 'next/navigation';
 import { employeeSchema } from '@lib/schemas/employeeSchema';
 import { Employee } from '@graphql/types/employeeTypes';
-import { createEmployee, fetchEmployees } from '@redux/thunk';
+import { createEmployee } from '@redux/thunk';
 import { useAppDispatch } from '@redux/hooks';
 import { useAppSelector } from '@redux/store';
 import { toast, ToastContainer } from 'react-toastify';
 import Button from '@components/atoms/Button';
+import { EMPLOYEE_PATHS, BUTTON_TYPES } from '@lib/utils/constants';
 
 const AddEmployee: React.FC = () => {
   const { control, handleSubmit } = useForm<Employee>({
@@ -42,16 +43,16 @@ const AddEmployee: React.FC = () => {
       }
       toast.success('Employee added successfully');
 
-      router.push('/employee/list');
+      router.push(EMPLOYEE_PATHS.LIST);
     } catch (error) {
       console.error('Failed to add employee:', error);
-      const errorMessage = error.message || 'An unknown error occurred';
+      const errorMessage = (error as Error).message || 'An unknown error occurred';
       toast.error(`Failed to add employee: ${errorMessage}`);
     }
   };
 
   const handleCancel = () => {
-    router.push('/employee/list');
+    router.push(EMPLOYEE_PATHS.LIST);
   };
 
   return (
@@ -77,7 +78,7 @@ const AddEmployee: React.FC = () => {
           >
             Cancel
           </Button>
-          <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          <Button type={BUTTON_TYPES.SUBMIT} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             {loadingCreate ? 'Saving...' : 'Submit'}
           </Button>
         </div>

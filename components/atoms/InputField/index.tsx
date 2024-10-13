@@ -34,7 +34,7 @@ const InputField: React.FC<InputFieldProps> = ({
           className={`w-full border px-4 py-2 ${error ? 'border-red-500' : 'border-gray-300'}`}
           required={required}
         >
-          {children} {/* Render the options here */}
+          {children}
         </select>
       ) : (
         <input
