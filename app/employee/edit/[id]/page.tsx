@@ -5,13 +5,16 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InputField from '@components/atoms/InputField';
 import { useParams } from 'next/navigation';
-import { toast } from 'react-toastify';
 import { useAppDispatch } from '@redux/hooks';
 import { useAppSelector } from '@redux/store';
+import { useRouter } from 'next/navigation';
 import { fetchEmployeeById } from '@redux/thunk';
+import { updateEmployee } from '@redux/thunk';
 import Loader from '@components/atoms/Loader';
 import { Employee } from '@graphql/types/employeeTypes';
 import { employeeSchema } from '@lib/schemas/employeeSchema';
+import Button from '@components/atoms/Button';
+import { toast, ToastContainer } from 'react-toastify';
 
 const EditEmployee: React.FC = () => {
   const { control, handleSubmit, reset } = useForm<Employee>({
@@ -19,10 +22,10 @@ const EditEmployee: React.FC = () => {
   });
 
   const { id } = useParams();
-
   const dispatch = useAppDispatch();
-
-  const loading = useAppSelector((state) => state.employees.loading);
+  const router = useRouter();
+  const loadingUpdate = useAppSelector((state) => state.employees.loadingUpdate);
+  const loadingEmployeeById = useAppSelector((state) => state.employees.loadingEmployeeById);
 
   useEffect(() => {
     if (id) {
@@ -41,25 +44,45 @@ const EditEmployee: React.FC = () => {
     }
   }, [id, dispatch, reset]);
 
-  const onSubmit: SubmitHandler<Employee> = (data) => {
-    console.log('click u[date');
-    // dispatch(updateEmployee({ id, ...data }))
-    //   .unwrap()
-    //   .then(() => {
-    //     toast.success('Employee updated successfully');
-    //     router.push('/employee/list');
-    //   })
-    //   .catch((error) => {
-    //     toast.error('Failed to update employee');
-    //   });
+  const onSubmit: SubmitHandler<Employee> = async (data) => {
+    const input = {
+      id: id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      number: data.number,
+      gender: data.gender,
+    };
+
+    try {
+      const result = await dispatch(updateEmployee(input)).unwrap();
+      if (!result || !result.id) {
+        const errorMessage = 'Failed to update employee. Please try again.';
+        console.error(errorMessage);
+        toast.error(errorMessage);
+        return;
+      }
+      toast.success('Employee updated successfully');
+
+      router.push('/employee/list');
+    } catch (error) {
+      console.error('Failed to update employee:', error);
+      const errorMessage = error.message || 'An unknown error occurred';
+      toast.error(`Failed to update employee: ${errorMessage}`);
+    }
   };
 
-  if (loading) {
+  const handleCancel = () => {
+    router.push('/employee/list');
+  };
+
+  if (loadingEmployeeById) {
     return <Loader />;
   }
 
   return (
     <div className="max-w-md mx-auto py-8">
+      <ToastContainer />
       <h1 className="text-2xl font-bold mb-4">Edit Employee</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex flex-col">
         <InputField name="firstName" control={control} label="First Name" required />
@@ -72,10 +95,17 @@ const EditEmployee: React.FC = () => {
           <option value="F">Female</option>
         </InputField>
 
-        <div className="mt-auto flex justify-end">
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Update
-          </button>
+        <div className="mt-auto flex justify-end space-x-4">
+          <Button
+            type="button"
+            onClick={handleCancel}
+            className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            {loadingUpdate ? 'Saving...' : 'Update'}
+          </Button>
         </div>
       </form>
     </div>

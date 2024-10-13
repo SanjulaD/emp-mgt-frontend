@@ -1,25 +1,31 @@
 import client from '@graphql/client';
-import { CREATE_EMPLOYEE, DELETE_EMPLOYEE } from '@graphql/mutation';
+import { CREATE_EMPLOYEE, DELETE_EMPLOYEE, UPDATE_EMPLOYEE } from '@graphql/mutation';
 import { GET_EMPLOYEES, GET_EMPLOYEE_BY_ID } from '@graphql/queries';
 import {
   Employee,
   CreateEmployeeInput,
-  DeleteEmployeeInput,
   CreateEmployeeResponse,
   DeleteEmployeeResponse,
   GetEmployeeByIdResponse,
   GetEmployeesResponse,
+  UpdateEmployeeInput,
+  UpdateEmployeeResponse,
 } from '@graphql/types/employeeTypes';
+import { FetchPolicy } from '@apollo/client';
 
 const employeeResolvers = {
   Query: {
     async getEmployees(): Promise<Employee[]> {
-      const { data }: { data: GetEmployeesResponse } = await client.query({ query: GET_EMPLOYEES });
+      const { data }: { data: GetEmployeesResponse } = await client.query({
+        query: GET_EMPLOYEES,
+        fetchPolicy: 'network-only' as FetchPolicy,
+      });
       return data.getEmployees;
     },
     async getEmployeeById(_: unknown, { id }: { id: string }): Promise<Employee | null> {
       const { data }: { data: GetEmployeeByIdResponse } = await client.query({
         query: GET_EMPLOYEE_BY_ID,
+        fetchPolicy: 'network-only' as FetchPolicy,
         variables: { id },
       });
       return data.getEmployeeById;
@@ -37,6 +43,18 @@ const employeeResolvers = {
       }
 
       return data.createEmployee;
+    },
+    async updateEmployee(_: unknown, input: UpdateEmployeeInput): Promise<Employee> {
+      const { data } = await client.mutate<UpdateEmployeeResponse>({
+        mutation: UPDATE_EMPLOYEE,
+        variables: { input },
+      });
+
+      if (!data || !data.updateEmployee) {
+        throw new Error('Failed to update employee');
+      }
+
+      return data.updateEmployee;
     },
     async deleteEmployee(_: unknown, { input }: { input: { id: string } }): Promise<Employee> {
       const { data } = await client.mutate<DeleteEmployeeResponse>({

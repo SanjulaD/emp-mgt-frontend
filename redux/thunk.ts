@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { employeeResolvers } from '@graphql/resolvers';
-import { CreateEmployeeInput } from '@graphql/types/employeeTypes';
+import { CreateEmployeeInput, UpdateEmployeeInput } from '@graphql/types/employeeTypes';
 
 // Fetch employees thunk
 export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async () => {
@@ -17,6 +17,12 @@ export const fetchEmployeeById = createAsyncThunk('employees/fetchEmployeeById',
 // Create employee thunk
 export const createEmployee = createAsyncThunk('employees/createEmployee', async (input: CreateEmployeeInput) => {
   const employee = await employeeResolvers.Mutation.createEmployee(null, input);
+  return employee;
+});
+
+// Update employee thunk
+export const updateEmployee = createAsyncThunk('employees/updateEmployee', async (input: UpdateEmployeeInput) => {
+  const employee = await employeeResolvers.Mutation.updateEmployee(null, input);
   return employee;
 });
 

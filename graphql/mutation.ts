@@ -8,6 +8,20 @@ export const CREATE_EMPLOYEE = gql`
       lastName
       email
       number
+      gender
+    }
+  }
+`;
+
+export const UPDATE_EMPLOYEE = gql`
+  mutation UpdateEmployee($input: UpdateEmployeeInput!) {
+    updateEmployee(input: $input) {
+      id
+      firstName
+      lastName
+      email
+      number
+      gender
     }
   }
 `;
@@ -19,6 +33,7 @@ export const DELETE_EMPLOYEE = gql`
       firstName
       lastName
       email
+      gender
     }
   }
 `;

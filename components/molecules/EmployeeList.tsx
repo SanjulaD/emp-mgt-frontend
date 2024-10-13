@@ -16,7 +16,7 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const employees = useAppSelector((state) => state.employees.employees);
-  const loading = useAppSelector((state) => state.employees.loading);
+  const loadingEmployees = useAppSelector((state) => state.employees.loadingEmployees);
 
   useEffect(() => {
     dispatch(fetchEmployees());
@@ -38,7 +38,7 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
       });
   };
 
-  if (loading) {
+  if (loadingEmployees) {
     return <Loader />;
   }
 
@@ -106,7 +106,7 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
     <div className="max-w-8xl mx-auto py-8">
       <ToastContainer />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {employees.map((employee) => (
+        {employees?.map((employee) => (
           <EmployeeCard
             key={employee.id}
             firstName={employee.firstName}

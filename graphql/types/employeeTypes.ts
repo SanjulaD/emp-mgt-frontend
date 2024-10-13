@@ -36,3 +36,16 @@ export interface DeleteEmployeeInput {
 export interface DeleteEmployeeResponse {
   deleteEmployee: Employee;
 }
+
+export interface UpdateEmployeeInput {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  number: string;
+  gender: string;
+}
+
+export interface UpdateEmployeeResponse {
+  updateEmployee: Employee;
+}

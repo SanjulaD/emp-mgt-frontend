@@ -9,7 +9,7 @@ import Button from '@components/atoms/Button';
 
 const Employee = () => {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list'); // Use state to toggle between list and grid view
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
   const handleAddEmployee = () => {
     router.push('/employee/add');

@@ -1,24 +1,26 @@
 'use client';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import InputField from '@components/atoms/InputField'; // Ensure this component can handle the "select" prop as well
+import InputField from '@components/atoms/InputField';
 import { useRouter } from 'next/navigation';
 import { employeeSchema } from '@lib/schemas/employeeSchema';
 import { Employee } from '@graphql/types/employeeTypes';
 import { createEmployee, fetchEmployees } from '@redux/thunk';
 import { useAppDispatch } from '@redux/hooks';
+import { useAppSelector } from '@redux/store';
 import { toast, ToastContainer } from 'react-toastify';
+import Button from '@components/atoms/Button';
 
 const AddEmployee: React.FC = () => {
-  const dispatch = useAppDispatch();
-
   const { control, handleSubmit } = useForm<Employee>({
     resolver: zodResolver(employeeSchema),
   });
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const loadingCreate = useAppSelector((state) => state.employees.loadingCreate);
 
   const onSubmit: SubmitHandler<Employee> = async (data) => {
     const input = {
@@ -38,7 +40,6 @@ const AddEmployee: React.FC = () => {
         toast.error(errorMessage);
         return;
       }
-      dispatch(fetchEmployees());
       toast.success('Employee added successfully');
 
       router.push('/employee/list');
@@ -47,6 +48,10 @@ const AddEmployee: React.FC = () => {
       const errorMessage = error.message || 'An unknown error occurred';
       toast.error(`Failed to add employee: ${errorMessage}`);
     }
+  };
+
+  const handleCancel = () => {
+    router.push('/employee/list');
   };
 
   return (
@@ -64,10 +69,17 @@ const AddEmployee: React.FC = () => {
           <option value="F">Female</option>
         </InputField>
 
-        <div className="mt-auto flex justify-end">
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Submit
-          </button>
+        <div className="mt-auto flex justify-end space-x-4">
+          <Button
+            type="button"
+            onClick={handleCancel}
+            className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            {loadingCreate ? 'Saving...' : 'Submit'}
+          </Button>
         </div>
       </form>
     </div>
