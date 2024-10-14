@@ -41,6 +41,8 @@ const SearchBar: React.FC<SearchBarProps> = React.memo(({ onSearch }) => {
           <option value="first_name">First Name</option>
           <option value="last_name">Last Name</option>
           <option value="email">Email</option>
+          <option value="number">Phone Number</option>
+          <option value="gender">Gender</option>
           <option value="created_at">Created At</option>
         </InputField>
 

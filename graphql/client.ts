@@ -1,5 +1,4 @@
 import { ApolloClient, InMemoryCache, HttpLink, WatchQueryFetchPolicy, DefaultOptions } from '@apollo/client';
-import fetch from 'cross-fetch';
 
 const defaultOptions: DefaultOptions = {
   watchQuery: {
@@ -13,8 +12,7 @@ const defaultOptions: DefaultOptions = {
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'http://127.0.0.1:3000/graphql',
-    fetch,
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
   }),
   cache: new InMemoryCache(),
   defaultOptions,

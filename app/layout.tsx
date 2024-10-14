@@ -16,12 +16,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Head>
-        <title>{typeof metadata.title === 'string' ? metadata.title : 'Employee Manager'}</title>
-        <meta name="description" content={metadata.description ?? 'Manage your employee data effectively..'} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <body className={`${inter.className} bg-gray-100 text-gray-900`}>
         <Providers>
           <div className="min-h-screen flex flex-col">
