@@ -15,7 +15,7 @@ import EmployeeCard from '@components/molecules/EmployeeCard';
 import SearchBar from '@components/molecules/SearchBar';
 import { DEFAULT_SEARCH_TERM, DEFAULT_SORT_BY, DEFAULT_SORT_ORDER, VIEW_MODES } from '@lib/utils/constants';
 
-const EmployeeList = ({ viewMode }: { viewMode: VIEW_MODES.LIST | VIEW_MODES.GRID }) => {
+const EmployeeList = ({ viewMode }: { viewMode: typeof VIEW_MODES.LIST | typeof VIEW_MODES.GRID }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const employees = useAppSelector((state) => state.employees.employees);
