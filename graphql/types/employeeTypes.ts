@@ -7,7 +7,11 @@ export interface Employee {
   gender: string;
   photo?: string;
 }
-
+export interface SearchEmployeeParams {
+  search: string;
+  sortBy: string;
+  sortOrder: string;
+}
 export interface GetEmployeesResponse {
   getEmployees: Employee[];
 }

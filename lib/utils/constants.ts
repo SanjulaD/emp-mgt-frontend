@@ -14,3 +14,7 @@ export const BUTTON_TYPES = {
   SUBMIT: 'submit',
   RESET: 'reset',
 } as const;
+
+export const DEFAULT_SEARCH_TERM = '';
+export const DEFAULT_SORT_BY = 'created_at';
+export const DEFAULT_SORT_ORDER = 'desc';

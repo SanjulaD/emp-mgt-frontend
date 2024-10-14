@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_EMPLOYEES = gql`
-  query GetEmployees {
-    getEmployees {
+  query GetEmployees($search: String, $sortBy: String, $sortOrder: String) {
+    getEmployees(search: $search, sortBy: $sortBy, sortOrder: $sortOrder) {
       id
       firstName
       lastName
@@ -10,6 +10,7 @@ export const GET_EMPLOYEES = gql`
       number
       gender
       photo
+      createdAt
     }
   }
 `;

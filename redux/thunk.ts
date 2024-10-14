@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { employeeResolvers } from '@graphql/resolvers';
-import { CreateEmployeeInput, UpdateEmployeeInput } from '@graphql/types/employeeTypes';
+import { CreateEmployeeInput, UpdateEmployeeInput, SearchEmployeeParams } from '@graphql/types/employeeTypes';
 
 // Fetch employees thunk
-export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async () => {
-  const employees = await employeeResolvers.Query.getEmployees();
+export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async (params: SearchEmployeeParams) => {
+  const employees = await employeeResolvers.Query.getEmployees(params);
   return employees;
 });
 

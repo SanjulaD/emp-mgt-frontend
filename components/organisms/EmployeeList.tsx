@@ -13,20 +13,21 @@ import { useRouter } from 'next/navigation';
 import Table from '@components/atoms/Table';
 import EmployeeCard from '@components/molecules/EmployeeCard';
 import SearchBar from '@components/molecules/SearchBar';
+import { DEFAULT_SEARCH_TERM, DEFAULT_SORT_BY, DEFAULT_SORT_ORDER, VIEW_MODES } from '@lib/utils/constants';
 
-const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
+const EmployeeList = ({ viewMode }: { viewMode: VIEW_MODES.LIST | VIEW_MODES.GRID }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const employees = useAppSelector((state) => state.employees.employees);
   const loadingEmployees = useAppSelector((state) => state.employees.loadingEmployees);
 
-  const [search, setSearch] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('first_name');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [search, setSearch] = useState<string>(DEFAULT_SEARCH_TERM);
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_SORT_BY);
+  const [sortOrder, setSortOrder] = useState<string>(DEFAULT_SORT_ORDER);
 
   useEffect(() => {
-    dispatch(fetchEmployees());
-  }, [dispatch]);
+    dispatch(fetchEmployees({ search, sortBy, sortOrder }));
+  }, [dispatch, search, sortBy, sortOrder]);
 
   const handleEdit = (id: string) => {
     router.push(`/employee/edit/${id}`);
@@ -44,16 +45,10 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
       });
   };
 
-  if (loadingEmployees) {
-    return <Loader />;
-  }
-
-  const handleSearch = (term: string) => {
+  const handleSearch = (term: string, sortBy: string, sortOrder: string) => {
     setSearch(term);
-  };
-
-  const handleSortChange = (sortType: string) => {
-    setSortBy(sortType);
+    setSortBy(sortBy);
+    setSortOrder(sortOrder);
   };
 
   const columns = [
@@ -103,8 +98,8 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
     return (
       <div className="max-w-6xl mx-auto py-8">
         <ToastContainer />
-        <SearchBar onSearch={handleSearch} onSortChange={handleSortChange} />
-        <Table columns={columns} data={employees} />
+        <SearchBar onSearch={handleSearch} />
+        {loadingEmployees ? <Loader /> : <Table columns={columns} data={employees} />}
       </div>
     );
   }
@@ -112,22 +107,26 @@ const EmployeeList = ({ viewMode }: { viewMode: 'list' | 'grid' }) => {
   return (
     <div className="max-w-8xl mx-auto py-8">
       <ToastContainer />
-      <SearchBar onSearch={handleSearch} onSortChange={handleSortChange} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {employees?.map((employee) => (
-          <EmployeeCard
-            key={employee.id}
-            firstName={employee.firstName}
-            lastName={employee.lastName}
-            email={employee.email}
-            phoneNumber={employee.number}
-            gender={employee.gender}
-            photo={employee?.photo}
-            onEdit={() => handleEdit(employee.id)}
-            onDelete={() => handleDelete(employee.id)}
-          />
-        ))}
-      </div>
+      <SearchBar onSearch={handleSearch} />
+      {loadingEmployees ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {employees?.map((employee) => (
+            <EmployeeCard
+              key={employee.id}
+              firstName={employee.firstName}
+              lastName={employee.lastName}
+              email={employee.email}
+              phoneNumber={employee.number}
+              gender={employee.gender}
+              photo={employee?.photo}
+              onEdit={() => handleEdit(employee.id)}
+              onDelete={() => handleDelete(employee.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

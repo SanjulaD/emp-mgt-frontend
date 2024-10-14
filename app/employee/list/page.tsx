@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import EmployeeList from '@components/molecules/EmployeeList';
+import EmployeeList from '@components/organisms/EmployeeList';
 import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import { MdGridView } from 'react-icons/md';

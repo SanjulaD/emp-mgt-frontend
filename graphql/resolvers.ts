@@ -4,6 +4,7 @@ import { GET_EMPLOYEES, GET_EMPLOYEE_BY_ID } from '@graphql/queries';
 import {
   Employee,
   CreateEmployeeInput,
+  SearchEmployeeParams,
   CreateEmployeeResponse,
   DeleteEmployeeResponse,
   GetEmployeeByIdResponse,
@@ -15,9 +16,10 @@ import { FetchPolicy } from '@apollo/client';
 
 const employeeResolvers = {
   Query: {
-    async getEmployees(): Promise<Employee[]> {
+    async getEmployees({ search, sortBy, sortOrder }: SearchEmployeeParams) {
       const { data }: { data: GetEmployeesResponse } = await client.query({
         query: GET_EMPLOYEES,
+        variables: { search, sortBy, sortOrder },
         fetchPolicy: 'network-only' as FetchPolicy,
       });
       return data.getEmployees;

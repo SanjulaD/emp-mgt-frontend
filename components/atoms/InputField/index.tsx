@@ -7,6 +7,7 @@ interface InputFieldProps {
   label: string;
   type?: string;
   required?: boolean;
+  placeholder?: string;
   as?: 'input' | 'select';
   children?: React.ReactNode;
 }
@@ -18,6 +19,7 @@ const InputField: React.FC<InputFieldProps> = ({
   type = 'text',
   required = false,
   as = 'input',
+  placeholder = '',
   children,
 }) => {
   const {
@@ -42,6 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
           type={type}
           className={`w-full border px-4 py-2 ${error ? 'border-red-500' : 'border-gray-300'}`}
           required={required}
+          placeholder={placeholder}
         />
       )}
       {error && <span className="text-red-500">{error.message}</span>}
