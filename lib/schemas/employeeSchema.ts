@@ -14,7 +14,7 @@ export const employeeSchema = z.object({
   email: z.string().email('Invalid email address'),
   number: z
     .string()
-    .regex(/^(\+94)?[0-9]{10}$/, 'Invalid phone number. Format: +94123456789 or 0123456789')
+    .regex(/^(\+94|0)?[1-9]\d{8}$/, 'Invalid phone number. Format: +94123456789 or 0123456789')
     .transform((num) => num.trim()),
   gender: z.enum(['M', 'F'], { required_error: 'Gender is required' }),
 });
