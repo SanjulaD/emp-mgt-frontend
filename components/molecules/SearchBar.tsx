@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import Button from '@components/atoms/Button';
 import InputField from '@components/atoms/InputField';
 import { DEFAULT_SEARCH_TERM, DEFAULT_SORT_BY, DEFAULT_SORT_ORDER } from '@lib/utils/constants';
@@ -23,8 +23,8 @@ const SearchBar: React.FC<SearchBarProps> = React.memo(({ onSearch }) => {
     },
   });
 
-  const handleSearch: SubmitHandler<SearchFormValues> = (data) => {
-    onSearch(data.searchTerm, data.sortBy, data.sortOrder);
+  const handleSearch: SubmitHandler<SearchFormValues> = ({ searchTerm, sortBy, sortOrder }) => {
+    onSearch(searchTerm, sortBy, sortOrder);
   };
 
   return (
@@ -65,5 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = React.memo(({ onSearch }) => {
     </form>
   );
 });
+
+SearchBar.displayName = 'SearchBar';
 
 export default SearchBar;

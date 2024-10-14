@@ -2,7 +2,7 @@ import React from 'react';
 
 interface Column {
   header: string;
-  accessor: string | ((row: any) => React.ReactNode);
+  accessor: string | ((_row: any) => React.ReactNode);
 }
 
 interface TableProps {

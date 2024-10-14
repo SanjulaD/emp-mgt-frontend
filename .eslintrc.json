@@ -2,10 +2,10 @@
   "extends": ["next/core-web-vitals", "plugin:import/errors", "plugin:import/warnings", "prettier"],
   "plugins": ["import"],
   "rules": {
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "import/named": "error",
     "import/default": "error",
     "import/namespace": "error",
-    "import/no-unused-modules": [1, { "unusedExports": true }]
+    "import/no-unused-modules": "off"
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useController, Control } from 'react-hook-form';
+import { useController, type Control } from 'react-hook-form';
 
 interface InputFieldProps {
   name: string;

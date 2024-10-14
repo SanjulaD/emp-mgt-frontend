@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InputField from '@components/atoms/InputField';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAppDispatch } from '@redux/hooks';
 import { useAppSelector } from '@redux/store';
-import { useRouter } from 'next/navigation';
-import { fetchEmployeeById } from '@redux/thunk';
-import { updateEmployee } from '@redux/thunk';
+import { updateEmployee, fetchEmployeeById } from '@redux/thunk';
 import Loader from '@components/atoms/Loader';
 import { Employee } from '@graphql/types/employeeTypes';
 import { employeeSchema } from '@lib/schemas/employeeSchema';
@@ -41,7 +39,7 @@ const EditEmployee: React.FC = () => {
             toast.error('Employee not found');
           }
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error('Failed to fetch employee details');
         });
     }
