@@ -13,6 +13,9 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  moduleNameMapper: {
+    '^@graphql/(.*)$': '<rootDir>/graphql/$1',
+  },
 };
 
 export default createJestConfig(config);

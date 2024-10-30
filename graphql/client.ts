@@ -1,21 +1,24 @@
-import { ApolloClient, InMemoryCache, HttpLink, WatchQueryFetchPolicy, DefaultOptions } from '@apollo/client';
+import { HttpLink, DefaultOptions } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/experimental-nextjs-app-support';
 
-const defaultOptions: DefaultOptions = {
-  watchQuery: {
-    fetchPolicy: 'cache-first' as WatchQueryFetchPolicy,
-    errorPolicy: 'all',
-  },
-  mutate: {
-    errorPolicy: 'all',
-  },
-};
-
-const client = new ApolloClient({
-  link: new HttpLink({
+export function client() {
+  const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
-  }),
-  cache: new InMemoryCache(),
-  defaultOptions,
-});
+  });
 
-export default client;
+  const defaultOptions: DefaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'cache-first',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  };
+
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link: httpLink,
+    defaultOptions,
+  });
+}

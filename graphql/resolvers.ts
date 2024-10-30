@@ -1,4 +1,3 @@
-import client from '@graphql/client';
 import { CREATE_EMPLOYEE, DELETE_EMPLOYEE, UPDATE_EMPLOYEE } from '@graphql/mutation';
 import { GET_EMPLOYEES, GET_EMPLOYEE_BY_ID } from '@graphql/queries';
 import {
@@ -13,11 +12,12 @@ import {
   UpdateEmployeeResponse,
 } from '@graphql/types/employeeTypes';
 import { FetchPolicy } from '@apollo/client';
+import { client } from '@graphql/client';
 
 const employeeResolvers = {
   Query: {
     async getEmployees({ search, sortBy, sortOrder }: SearchEmployeeParams) {
-      const { data }: { data: GetEmployeesResponse } = await client.query({
+      const { data }: { data: GetEmployeesResponse } = await client().query({
         query: GET_EMPLOYEES,
         variables: { search, sortBy, sortOrder },
         fetchPolicy: 'network-only' as FetchPolicy,
@@ -25,7 +25,7 @@ const employeeResolvers = {
       return data.getEmployees;
     },
     async getEmployeeById(_: unknown, { id }: { id: string }): Promise<Employee | null> {
-      const { data }: { data: GetEmployeeByIdResponse } = await client.query({
+      const { data }: { data: GetEmployeeByIdResponse } = await client().query({
         query: GET_EMPLOYEE_BY_ID,
         fetchPolicy: 'network-only' as FetchPolicy,
         variables: { id },
@@ -35,7 +35,7 @@ const employeeResolvers = {
   },
   Mutation: {
     async createEmployee(_: unknown, input: CreateEmployeeInput): Promise<Employee> {
-      const { data } = await client.mutate<CreateEmployeeResponse>({
+      const { data } = await client().mutate<CreateEmployeeResponse>({
         mutation: CREATE_EMPLOYEE,
         variables: { input },
       });
@@ -47,7 +47,7 @@ const employeeResolvers = {
       return data.createEmployee;
     },
     async updateEmployee(_: unknown, input: UpdateEmployeeInput): Promise<Employee> {
-      const { data } = await client.mutate<UpdateEmployeeResponse>({
+      const { data } = await client().mutate<UpdateEmployeeResponse>({
         mutation: UPDATE_EMPLOYEE,
         variables: { input },
       });
@@ -59,7 +59,7 @@ const employeeResolvers = {
       return data.updateEmployee;
     },
     async deleteEmployee(_: unknown, { input }: { input: { id: string } }): Promise<Employee> {
-      const { data } = await client.mutate<DeleteEmployeeResponse>({
+      const { data } = await client().mutate<DeleteEmployeeResponse>({
         mutation: DELETE_EMPLOYEE,
         variables: { input: { id: input.id } },
       });
